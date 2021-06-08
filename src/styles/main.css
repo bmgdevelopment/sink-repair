@@ -1,8 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Comfortaa|Patua+One");
 @import "form.css";
 
-/*Typography
---------------------------------------------------------------*/
+/* Main Typography --------------------------------------------------------------*/
 body,
 button,
 input,
@@ -26,6 +25,7 @@ h1,h2,h3,h4,h5,h6 {
 	margin-bottom: 2px;
 }
 
+/* .request is the class of all li the submitted requests*/
 .request {
 	list-style: none;
 }
