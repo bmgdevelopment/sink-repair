@@ -9,7 +9,7 @@ const mainContainer = document.querySelector('#container'); //needed to target t
 // 3️⃣ After the fetch method retrieves the requests array, the then method takes the response parameter and 
 //submits the requests array as the argument. .then() attaches callbacks for the resolution and/or rejection of the Promise.
 // 4️⃣ the response (requests array) is converted into json using method .json()
-// 5️⃣ .then() method is used next to create another parameter which is serviceRequests and the response.json() conversation 
+// 5️⃣ .then() method is used next to create another parameter which is serviceRequests and the response.json() conversion
 //is submitted as an argument
 // 6️⃣ the empty obj applicationState now has a key created called "requests" and the key is the argument.
 //In this case, the argument passed for this argument is the response.json() array data
