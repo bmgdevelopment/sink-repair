@@ -1,9 +1,9 @@
 // 1️⃣ the consts are defined for use within this module
 
 const applicationState = {}; //temporary empty object that holds the user input prior to pressing the submit request button and solidifying the request
-const API = 'http://localhost:8088'; //weblink that hosts all the database.json information
+const API = 'http://localhost:1088'; //weblink that hosts all the database.json information; initiate at api folder terminal and run: json-server database.json -p 1088 -w
 const mainContainer = document.querySelector('#container'); //needed to target the main section if the DOM
-
+const completions = [];
 
 // 2️⃣ const fetchRequests() is used to return the requests array via the API link using the fetch method
 // 3️⃣ After the fetch method retrieves the requests array, the then method takes the response parameter and 
@@ -15,35 +15,83 @@ const mainContainer = document.querySelector('#container'); //needed to target t
 //In this case, the argument passed for this argument is the response.json() array data
 export const fetchRequests = () => {
   return fetch(`${API}/requests`)
-    .then(response => response.json()) //what's returned back from data is the response and then it's converted into json/parsing into our object
+  .then(response => response.json()) //what's returned back from data is the response and then it's converted into json/parsing into our object
+  .then(
+    (serviceRequests) => {
+      // Store the external state in application state
+      applicationState.requests = serviceRequests;
+    }
+    );
+  };
+  
+  // 7️⃣ const getRequests() is used to return the empty state obj's requests DATA?? 
+  // then the requests data is converted into a copied array with each objects keys and values
+  // this is later imported into Request.js
+  export const getRequests = () => {
+    return applicationState.requests.map(request => ({...request}))
+  };
+  
+  //FETCH PLUMBERS FROM API & GET PLUMBERS LIST
+  let plumbersArr = [];
+  export const fetchPlumbers = () => {
+    return fetch(`${API}/plumbers`)
+    .then(response => response.json())
     .then(
-      (serviceRequests) => {
-        // Store the external state in application state
-        applicationState.requests = serviceRequests;
+      (data) => {
+        plumbersArr = data;
       }
     );
-};
+  }
+  
+  export const getPlumbers = () => {
+    return plumbersArr;
+  }
 
-// 7️⃣ const getRequests() is used to return the empty state obj's requests DATA?? 
-// then the requests data is converted into a copied array with each objects keys and values
-// this is later imported into Request.js
-export const getRequests = () => {
-  return applicationState.requests.map(request => ({...request}))
-};
+  //FETCH COMPLETIONS FROM API & GET COMPLETIONS LIST
+  let completionsArr = [];
+  export const fetchCompletions = () => {
+    return fetch(`${API}/completions`)
+    .then(response => response.json())
+    .then(
+      (completions) => {
+        completionsArr = completions;
+      }
+    );
+  }
 
-//The POST method on any HTTP request means "Hey API!! I want you to create something new!"
-// 8️⃣ the const sendRequest uses the parameter of userServiceRequest.
-// a const fetchOptions is defined and holds instructions to post the sent request
-// NEED MORE INFO 👀
-export const sendRequest = (userServiceRequest) => {
+  export const getCompletions = () => {
+    return completionsArr;
+  }
+
+  export const saveCompletion = (requestCompleted) => {
     const fetchOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(userServiceRequest) //.stringify - Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestCompleted)
     }
 
+    return fetch(`${API}/completions`, fetchOptions)
+      .then(response => response.json())
+      .then((completionPosted) => {
+        completions.push(completionPosted)
+      })
+  }
+
+  //The POST method on any HTTP request means "Hey API!! I want you to create something new!"
+  // 8️⃣ the const sendRequest uses the parameter of userServiceRequest.
+  // a const fetchOptions is defined and holds instructions to post the sent request
+  // NEED MORE INFO 👀
+  export const sendRequest = (userServiceRequest) => {
+    const fetchOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(userServiceRequest) //.stringify - Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
+    }
+    
 
     return fetch(`${API}/requests`, fetchOptions)
         .then(response => response.json())
@@ -66,6 +114,7 @@ export const deleteRequest = (id) => {
             }
         )
 }
+
 
 // MAIN VERBIAGE FOR JSON: 
 // get & fetch--retreive data from API; Please give me this resource.
